@@ -6,8 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!--<Compile Include="List.fs" />-->
-    <!--<Compile Include="Checker.fs" />-->
     <Compile Include="Utils.fs" />
 
     <FsYacc Include="Parser.fsy">
