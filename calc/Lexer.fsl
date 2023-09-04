@@ -8,15 +8,18 @@ let whitespace = [' ' '\t']
 let newline = ['\r' '\n']
 
 rule token = parse
-| whitespace		{ token lexbuf }
-| newline			{ NEWLINE }
-| digit+			{ lexeme lexbuf |> float |> NUM }
-//| ['-']?digit+		{ Number (System.Int32.Parse ( lexeme buf ) ) }
-| '+'				{ PLUS }
-| '-'				{ MINUS }
-| '*'				{ MUL }
-| '/'				{ DIV }
-| '('				{ LPAREN }
-| ')'				{ RPAREN }
-| eof				{ EOF }
-| _					{ lexeme lexbuf |> sprintf "Parsing error: %s" |> failwith }
+| whitespace			{ token lexbuf }
+| newline				{ NEWLINE }
+| digit+				{ lexeme lexbuf |> float |> NUM }
+//| digit+['.']?digit*	{ lexeme lexbuf |> float |> NUM }
+| '.'digit+				{ lexeme lexbuf |> float |> NUM }
+| ['-']?digit+			{ lexeme lexbuf |> float |> NUM }
+| '+'					{ PLUS }
+| '-'					{ MINUS }
+| '*'					{ MUL }
+| '/'					{ DIV }
+| '%'					{ MOD }
+| '('					{ LPAREN }
+| ')'					{ RPAREN }
+| eof					{ EOF }
+| _						{ lexeme lexbuf |> sprintf "Parsing error: %s" |> failwith }
