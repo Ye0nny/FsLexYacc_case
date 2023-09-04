@@ -6,5 +6,4 @@ type Expr =
     | Minus of Expr * Expr
     | Mul of Expr * Expr
     | Div of Expr * Expr
-    | Mod of Expr * Expr
 
