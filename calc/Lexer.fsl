@@ -4,6 +4,7 @@ open Utils
 }
 
 let digit = ['0'-'9']
+let chars = ['a'-'z' 'A'-'Z']
 let whitespace = [' ' '\t']
 let newline = ['\r' '\n']
 
@@ -14,11 +15,13 @@ rule token = parse
 //| digit+['.']?digit*	{ lexeme lexbuf |> float |> NUM }
 | '.'digit+				{ lexeme lexbuf |> float |> NUM }
 | ['-']?digit+			{ lexeme lexbuf |> float |> NUM }
+| chars+digit*			{ lexeme lexbuf |> string |> VAR }
 | '+'					{ PLUS }
 | '-'					{ MINUS }
 | '*'					{ MUL }
 | '/'					{ DIV }
 | '('					{ LPAREN }
 | ')'					{ RPAREN }
+| '='					{ ASSIGN }
 | eof					{ EOF }
 | _						{ lexeme lexbuf |> sprintf "Parsing error: %s" |> failwith }

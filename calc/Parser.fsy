@@ -7,6 +7,8 @@ open Ast
 %token <float> NUM
 %token PLUS MINUS MUL DIV
 %token EOF LPAREN RPAREN
+%token ASSIGN
+%token <string> VAR
 
 %left PLUS MINUS
 %left MUL DIV
@@ -24,10 +26,12 @@ input:
 
 stmt:
 	| NEWLINE		{ }
-	| expr EOF		{ eval $1 }
+	| expr ASSIGN expr		{ Assign ($1, $3) |> stmtEval }
+	| expr EOF		{ exprEval $1 }
 	;
 
 expr:
+	| VAR					{ Var $1 }
 	| NUM					{ Num $1 }
 	| expr PLUS expr		{ Plus ($1, $3) }
 	| expr MINUS expr		{ Minus ($1, $3) }
