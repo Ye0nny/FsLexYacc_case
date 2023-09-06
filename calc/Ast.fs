@@ -1,15 +1,17 @@
 ﻿module Ast
 
+type Var = string
+
 type Expr =
     | Num of float
-    | Var of string
+    | Var of Var
     | Plus of Expr * Expr
     | Minus of Expr * Expr
     | Mul of Expr * Expr
     | Div of Expr * Expr
 
 type Stmt =
-    | Assign of Expr * Expr
+    | Assign of Var * Expr
 
 
 let rec _exprEval (p1:Expr) =
@@ -29,14 +31,10 @@ let rec _exprEval (p1:Expr) =
     result
 
 let exprEval (p1:Expr) =
-    printfn "%.10A" p1
-
     let result = _exprEval (p1)
-    printfn "%.10A" result
+    result
 
 let stmtEval (p1:Stmt) =
-    printfn "%A" p1
-
     let r1, r2 =
         match p1 with
         | Assign(x, y) -> x, _exprEval(y)
