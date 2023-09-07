@@ -13,34 +13,35 @@ type Expr =
     | Div of Expr * Expr
 
 
+
+
+type Env<'T1, 'T2> when 'T1:equality () =
+    let emptyDict = new Dictionary<'T1, 'T2>()
+
+    member x.valueTable = emptyDict
+
+    member x.add(k:'T1, v:'T2) =
+        if x.valueTable.ContainsKey(k) then
+            x.valueTable.[k] <- v
+        else
+            x.valueTable.Add(k, v)
+
+    member x.del(k:'T1) =
+        x.valueTable.Remove(k)
+
+    member x.lookup(k:'T1) =
+        match x.valueTable.TryGetValue(k) with
+        | true, v -> Some(v)
+        | false, _ -> None
+
+    member x.toList():('T1*'T2) list =
+        let result = 
+            x.valueTable 
+            |> Seq.map (|KeyValue|)
+            |> Seq.toList
+        result
+
 module Env =
-
-    type Env<'T1, 'T2> when 'T1:equality () =
-        let emptyDict = new Dictionary<'T1, 'T2>()
-
-        member x.valueTable = emptyDict
-
-        member x.add(k:'T1, v:'T2) =
-            if x.valueTable.ContainsKey(k) then
-                x.valueTable.[k] <- v
-            else
-                x.valueTable.Add(k, v)
-
-        member x.del(k:'T1) =
-            x.valueTable.Remove(k)
-
-        member x.lookup(k:'T1) =
-            match x.valueTable.TryGetValue(k) with
-            | true, v -> Some(v)
-            | false, _ -> None
-
-        member x.toList():('T1*'T2) list =
-            let result = 
-                x.valueTable 
-                |> Seq.map (|KeyValue|)
-                |> Seq.toList
-            result
-
     let ofList (li:('T1*'T2) list) =
         let newEnv = Env<'T1,'T2>()
         li |> Seq.iter (fun (k,v) -> newEnv.valueTable.Add(k, v)) 
@@ -48,7 +49,7 @@ module Env =
 
 
 
-let env = Env.Env<string, Expr>()
+let env = Env<string, Expr>()
 
 let rec _exprEval (p1:Expr) =
     let result =
