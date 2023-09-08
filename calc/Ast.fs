@@ -27,7 +27,7 @@ type Env<'T1, 'T2> when 'T1:equality () =
             x.valueTable.Add(k, v)
 
     member x.del(k:'T1) =
-        x.valueTable.Remove(k)
+        x.valueTable.Remove(k) |> ignore
 
     member x.lookup(k:'T1) =
         match x.valueTable.TryGetValue(k) with
@@ -44,7 +44,7 @@ type Env<'T1, 'T2> when 'T1:equality () =
 module Env =
     let ofList (li:('T1*'T2) list) =
         let newEnv = Env<'T1,'T2>()
-        li |> Seq.iter (fun (k,v) -> newEnv.valueTable.Add(k, v)) 
+        li |> Seq.iter (fun (k,v) -> newEnv.add(k, v)) 
         newEnv
 
 
