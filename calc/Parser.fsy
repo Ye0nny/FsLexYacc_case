@@ -8,7 +8,7 @@ open Ast
 %token <float> NUM
 %token PLUS MINUS MUL DIV
 %token EOF LPAREN RPAREN
-%token ASSIGN PRINT
+%token ASSIGN PRINT SEMICOLON
 %token <string> VAR
 
 %left PLUS MINUS
@@ -26,11 +26,11 @@ input:
 	| input stmt	{ [] }
 	;
 
-
 stmt:
-	| PRINT expr		{ Print $2 }
-	| VAR ASSIGN expr	{ Assign ($1, $3) }
-	| expr				{ ExprStmt $1 }
+	| PRINT expr SEMICOLON		{ Print $2 }
+	| VAR ASSIGN expr SEMICOLON	{ Assign ($1, $3) }
+	| expr SEMICOLON			{ ExprStmt $1 }
+	| expr						{ failwith "Missing semicolon at the end of statement" }
 	;
 
 expr:
