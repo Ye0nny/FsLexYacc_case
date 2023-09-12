@@ -14,31 +14,32 @@ open Ast
 %left PLUS MINUS
 %left MUL DIV
 
-%start input
-%type <unit> input
+%start input stmt expr
+%type <Stmt list> input
+%type <Stmt> stmt
+%type <Expr> expr
 
 %%
 
 input:
-	| /* empty */	{ }
-	| input stmt	{ }
+	| /* empty */	{ [] }
+	| input stmt	{ [] }
 	;
 
 
 stmt:
-	| NEWLINE		{ }
-	| PRINT expr	{ exprEval $2 |> printfn "%A" }
-	| VAR ASSIGN expr { env.add($1, $3) }
-	| expr EOF		{ }
+	| PRINT expr		{ Print $2 }
+	| VAR ASSIGN expr	{ Assign ($1, $3) }
+	| expr				{ ExprStmt $1 }
 	;
 
 expr:
 	| VAR					{ Var $1 }
 	| NUM					{ Num $1 }
-	| expr PLUS expr		{ Plus ($1, $3) }
-	| expr MINUS expr		{ Minus ($1, $3) }
-	| expr MUL expr			{ Mul ($1, $3) }
-	| expr DIV expr			{ Div ($1, $3) }
+	| expr PLUS expr		{ Binary(Plus, $1, $3) }
+	| expr MINUS expr		{ Binary(Minus, $1, $3) }
+	| expr MUL expr			{ Binary(Mul, $1, $3) }
+	| expr DIV expr			{ Binary(Div, $1, $3) }
 	| LPAREN expr RPAREN	{ $2 }
 	;
 

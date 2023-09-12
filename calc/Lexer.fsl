@@ -10,7 +10,7 @@ let newline = ['\r' '\n']
 
 rule token = parse
 | whitespace			{ token lexbuf }
-| newline				{ NEWLINE }
+| newline				{ token lexbuf }
 | "print"				{ PRINT }
 | digit+				{ lexeme lexbuf |> float |> NUM }
 //| digit+['.']?digit*	{ lexeme lexbuf |> float |> NUM }
