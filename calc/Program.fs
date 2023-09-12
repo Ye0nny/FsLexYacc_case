@@ -12,7 +12,19 @@ let parseExpr (input:string) =
     let output = Parser.expr Lexer.token lexbuf
     output
 
-let calc () = 
+let runExpr () = 
+    printfn "Press Ctrl+c to Exit"
+
+    while true do
+        printf "Evaluate > "
+        let input = Console.ReadLine()
+        try
+            let result = parseExpr input
+            printfn "%A" (result |> Eval.exprEval)
+        with ex -> printfn "%s" (ex.ToString())
+
+
+let runStmt () = 
     printfn "Press Ctrl+c to Exit"
 
     while true do
@@ -20,11 +32,11 @@ let calc () =
         let input = Console.ReadLine()
         try
             let result = parseStmt input
-            printfn "%A" result
+            result |> Eval.stmtEval
         with ex -> printfn "%s" (ex.ToString())
    
 
 [<EntryPoint>]
 let main argv =
-    calc ()
+    runStmt ()
     0
