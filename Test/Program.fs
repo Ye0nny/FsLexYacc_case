@@ -1,1 +1,6 @@
-module Program = let [<EntryPoint>] main _ = 0
+module Program = 
+open TestParse
+
+let [<EntryPoint>] main _ = 
+    test ()
+    0
