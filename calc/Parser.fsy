@@ -23,7 +23,7 @@ open Ast
 
 input:
 	| /* empty */	{ [] }
-	| input stmt	{ [] }
+	| input stmt	{ $1 @ [$2] }
 	;
 
 stmt:

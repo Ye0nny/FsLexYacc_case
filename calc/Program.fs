@@ -1,16 +1,18 @@
 ﻿open System
 open FSharp.Text.Lexing
 open Eval
+open Utils
 
-let parseStmt (input:string) =
+let parseInput (input:string) =
     let lexbuf = LexBuffer<char>.FromString input
-    let output = Parser.stmt Lexer.token lexbuf
-    output
+    let stmts = Parser.input Lexer.token lexbuf
+    stmts
     
 let parseExpr (input:string) =
     let lexbuf = LexBuffer<char>.FromString input
-    let output = Parser.expr Lexer.token lexbuf
-    output
+    let expr = Parser.expr Lexer.token lexbuf
+    expr
+
 
 let runExpr () = 
     printfn "Press Ctrl+c to Exit"
@@ -24,19 +26,21 @@ let runExpr () =
         with ex -> printfn "%s" (ex.ToString())
 
 
-let runStmt () = 
-    printfn "Press Ctrl+c to Exit"
+let runStmts () = 
+    printfn "Press Ctrl+c to Exit."
+    printfn "The input cycle ends with the 'END' keyword."
 
     while true do
-        printf "Evaluate > "
-        let input = Console.ReadLine()
+        printf "Evaluate > \n"
+        let input = readLines ""
         try
-            let result = parseStmt input
-            result |> Eval.stmtEval
+            parseInput input |> printfn "%A"
+            //let stmts = parseInput input
+            //stmts |> List.iter (fun x -> Eval.stmtEval x)
         with ex -> printfn "%s" (ex.ToString())
-   
+
 
 [<EntryPoint>]
 let main argv =
-    runStmt ()
+    runStmts ()
     0
