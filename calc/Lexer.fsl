@@ -13,10 +13,12 @@ rule token = parse
 | newline				{ token lexbuf }
 | ';'					{ SEMICOLON }
 | "print"				{ PRINT }
-| digit+				{ lexeme lexbuf |> float |> NUM }
-//| digit+['.']?digit*	{ lexeme lexbuf |> float |> NUM }
-| '.'digit+				{ lexeme lexbuf |> float |> NUM }
-| ['-']?digit+			{ lexeme lexbuf |> float |> NUM }
+| digit+				{ lexeme lexbuf |> int |> INT }
+| digit+['.']?digit*	{ lexeme lexbuf |> float |> FLOAT }
+| ['-']?digit+			{ lexeme lexbuf |> int |> INT }
+| ['-']?digit+['.']?digit*	{ lexeme lexbuf |> float |> FLOAT }
+| "True"  | "true"		{ true |> BOOL }
+| "False" | "false"		{ false |> BOOL }
 | chars+digit*			{ lexeme lexbuf |> string |> VAR }
 | '+'					{ PLUS }
 | '-'					{ MINUS }

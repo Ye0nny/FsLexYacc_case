@@ -38,28 +38,31 @@ module Env =
 let env = Env<string, Expr>()
 
 
-let rec _exprEval (p1:Expr) =
+let calcOp op x y =
+    match op with
+    | Op.Plus -> x + y
+    | Op.Minus -> x - y
+    | Op.Mul -> x * y
+    | Op.Div -> x / y
+
+let rec _exprEval (expr:Expr) =
     let result =
-        match p1 with
-        | Num(x) -> x
-        | Var(x) ->
-            match env.lookup(x) with
-            | Some(v) -> _exprEval(v)
-            | None -> failwith ("[Error] exprEval| " + x + " is not found.")
-        | Binary(Op.Plus, Num(x), Num(y)) -> x + y
-        | Binary(Op.Minus, Num(x), Num(y)) -> x - y
-        | Binary(Op.Mul, Num(x), Num(y)) -> x * y
-        | Binary(Op.Div, Num(x), Num(y)) -> x / y
-        | Binary(Op.Plus, x, y) -> (_exprEval x) + (_exprEval y)
-        | Binary(Op.Minus ,x, y) -> (_exprEval x) - (_exprEval y)
-        | Binary(Op.Mul, x, y) -> (_exprEval x) * (_exprEval y)
-        | Binary(Op.Div, x, y) -> (_exprEval x) / (_exprEval y)
+        match expr with
+        | Int(x) -> x
+        | Float(x) -> x |> int // truncate
+        | Bool(v) -> if v then 1 else 0
+        | Var(var) ->
+            match env.lookup(var) with
+            | Some(e) -> _exprEval(e)
+            | None -> failwith ("[Error] exprEval| " + var + " is not found.")
+        | Binary(op, Int(x), Int(y)) -> calcOp op x y
+        | Binary(op, expr1, expr2) -> calcOp op (_exprEval expr1) (_exprEval expr2)
         //| _ -> failwith "[Error] exprEval| Failed. "
     result
 
 module Eval =
-    let exprEval (p1:Expr) =
-        let result = _exprEval (p1)
+    let exprEval (expr:Expr) =
+        let result = _exprEval expr
         result
 
     let stmtEval (stmt:Stmt) =

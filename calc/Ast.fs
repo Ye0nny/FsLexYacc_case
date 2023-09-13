@@ -9,7 +9,9 @@ type Op =
     | Div
 
 type Expr =
-    | Num of float
+    | Int of int
+    | Float of float
+    | Bool of bool
     | Var of Var
     | Binary of Op * Expr * Expr
 
