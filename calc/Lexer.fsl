@@ -13,13 +13,8 @@ rule token = parse
 | newline				{ token lexbuf }
 | ';'					{ SEMICOLON }
 | "print"				{ PRINT }
-| digit+				{ lexeme lexbuf |> int |> INT }
-| digit+['.']?digit*	{ lexeme lexbuf |> float |> FLOAT }
-| ['-']?digit+			{ lexeme lexbuf |> int |> INT }
-| ['-']?digit+['.']?digit*	{ lexeme lexbuf |> float |> FLOAT }
-| "True"  | "true"		{ true |> BOOL }
-| "False" | "false"		{ false |> BOOL }
-| chars+digit*			{ lexeme lexbuf |> string |> VAR }
+| "if"					{ IF }
+| "else"				{ ELSE }
 | '+'					{ PLUS }
 | '-'					{ MINUS }
 | '*'					{ MUL }
@@ -27,5 +22,22 @@ rule token = parse
 | '('					{ LPAREN }
 | ')'					{ RPAREN }
 | '='					{ ASSIGN }
+| '<'					{ LT }
+| "<="					{ LE }
+| '>'					{ GT }
+| ">="					{ GE }
+| "=="					{ EQ }
+| "!="					{ NE }
+| "and" | "&&"			{ AND }
+| "or"  | "||"			{ OR }
+| '{'					{ LCBRACE }
+| '}'					{ RCBRACE }
 | eof					{ EOF }
+| digit+				{ lexeme lexbuf |> int |> INT }
+| digit+['.']?digit*	{ lexeme lexbuf |> float |> FLOAT }
+| ['-']?digit+			{ lexeme lexbuf |> int |> INT }
+| ['-']?digit+['.']?digit*	{ lexeme lexbuf |> float |> FLOAT }
+| "True"  | "true"		{ true |> BOOL }
+| "False" | "false"		{ false |> BOOL }
+| chars+digit*			{ lexeme lexbuf |> string |> VAR }
 | _						{ lexeme lexbuf |> sprintf "Parsing error: %s" |> failwith }
