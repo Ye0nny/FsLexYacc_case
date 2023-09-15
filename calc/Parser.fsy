@@ -26,8 +26,10 @@ open Ast
 %start input stmt expr
 %type <Stmt list> input
 %type <Stmt> stmt
-%type <Stmt list> block_stmt
 %type <Expr> expr
+
+%nonassoc IFX
+%nonassoc ELSE
 
 %%
 
@@ -37,25 +39,18 @@ input:
 	;
 
 stmt:
-	| open_stmt { $1 }
-	| closed_stmt { $1 }
-	;
-
-open_stmt:
-	| IF LPAREN expr RPAREN stmt	{ If ($3, $5) }
-	| IF LPAREN expr RPAREN closed_stmt ELSE open_stmt	{ IfElse ($3, $5, $7) }
-	| IF LPAREN expr RPAREN LCBRACE	block_stmt RCBRACE	{ IfBlock ($3, $6) }
-	| IF LPAREN expr RPAREN LCBRACE	block_stmt RCBRACE ELSE LCBRACE block_stmt RCBRACE { IfElseBlock ($3, $6, $10) }
-	;
-
-closed_stmt:
 	| simple_stmt	{ $1 }
-	| IF LPAREN expr RPAREN closed_stmt ELSE closed_stmt { IfElse ($3, $5, $7) }
+	| block_stmt	{ $1 }
+	| IF LPAREN expr RPAREN stmt %prec IFX	{ If ($3, $5, None) }
+	| IF LPAREN expr RPAREN stmt ELSE stmt	{ If ($3, $5, Some $7) }
 	;
 
 block_stmt:
+	| LCBRACE stmt_list RCBRACE	{ BlockStmt $2 }
+
+stmt_list:
 	| /* empty */		{ [] }
-	| block_stmt stmt	{ $1 @ [$2] }
+	| stmt_list stmt	{ $1 @ [$2] }
 
 simple_stmt:
 	| PRINT expr SEMICOLON			{ Print $2 }

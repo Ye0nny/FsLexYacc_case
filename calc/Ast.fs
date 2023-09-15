@@ -27,8 +27,6 @@ type Stmt =
     | Assign of Var * Expr
     | Print of Expr
     | ExprStmt of Expr
-    | If of Expr * Stmt
-    | IfElse of Expr * Stmt * Stmt
-    | IfBlock of Expr * Stmt list
-    | IfElseBlock of Expr * Stmt list * Stmt list
+    | If of Expr * Stmt * Stmt option
+    | BlockStmt of Stmt list
 
